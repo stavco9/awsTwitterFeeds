@@ -1,14 +1,6 @@
 package twitterFeeds;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import twitter4j.FilterQuery;
-import twitter4j.StallWarning;
-import twitter4j.Status;
-import twitter4j.StatusDeletionNotice;
-import twitter4j.StatusListener;
-import twitter4j.TwitterStream;
-import twitter4j.TwitterStreamFactory;
-import twitter4j.URLEntity;
+import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.BufferedReader;
