@@ -1,5 +1,6 @@
 package twitterFeeds;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import twitter4j.FilterQuery;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -22,14 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TwitterStreamAPI {
-	
-	private static final String consumerKey = System.getProperty("config.twitter.consumer.key");
-	private static final String consumerSecret = System.getProperty("config.twitter.consumer.secret");
-	private static final String accessToken = System.getProperty("config.twitter.access.token");
-	private static final String accessTokenSecret = System.getProperty("config.twitter.access.secret");
-	private static final String track = System.getProperty("config.twitter.track");
-	private static final String sqsAmazonUrl = System.getProperty("config.sqs.url");
-	
+
 	private static String getDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
 	    StringBuilder result = new StringBuilder();
 	    boolean first = true;
@@ -65,19 +59,19 @@ public class TwitterStreamAPI {
                 
 				for(URLEntity entity: status.getURLEntities()) {
 					try {
-						HashMap<String, String> twitterObjToSQS = new HashMap<String, String>();
+						HashMap<String, String> twitterObjToSQS = new HashMap<>();
 	
 						twitterObjToSQS.put("link", entity.getExpandedURL());
-						twitterObjToSQS.put("track", track);
+						twitterObjToSQS.put("track", Constants.track);
 					
-						HashMap<String, String> BodyRequest = new HashMap<String, String>(); 
+						HashMap<String, String> BodyRequest = new HashMap<>();
 	
 						BodyRequest.put("Action", "SendMessage");
 						BodyRequest.put("MessageBody", twitterObjToSQS.toString());
 						
 						String bodyRequestString = getDataString(BodyRequest);
 						
-						URL urlToAws = new URL(sqsAmazonUrl);
+						URL urlToAws = new URL(Constants.sqsAmazonUrl);
 							
 						HttpURLConnection conn = (HttpURLConnection) urlToAws.openConnection();
 						
@@ -95,9 +89,9 @@ public class TwitterStreamAPI {
 						stream.flush();
 						
 						try(BufferedReader br = new BufferedReader(
-								  new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+								  new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
 								    StringBuilder response = new StringBuilder();
-								    String responseLine = null;
+								    String responseLine;
 								    while ((responseLine = br.readLine()) != null) {
 								        response.append(responseLine.trim());
 						    }
@@ -134,10 +128,10 @@ public class TwitterStreamAPI {
 	    // Create our configuration
 	    ConfigurationBuilder cb = new ConfigurationBuilder();
 	    cb.setDebugEnabled(true)
-	        .setOAuthConsumerKey(consumerKey)
-	        .setOAuthConsumerSecret(consumerSecret)
-	        .setOAuthAccessToken(accessToken)
-	        .setOAuthAccessTokenSecret(accessTokenSecret);
+	        .setOAuthConsumerKey(Constants.consumerKey)
+	        .setOAuthConsumerSecret(Constants.consumerSecret)
+	        .setOAuthAccessToken(Constants.accessToken)
+	        .setOAuthAccessTokenSecret(Constants.accessTokenSecret);
 
 	    // Create our Twitter stream
 	    TwitterStream twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
@@ -145,7 +139,7 @@ public class TwitterStreamAPI {
 	    twitterStream.addListener(listener);
 	    
 	    FilterQuery twitterFilterQuery = new FilterQuery();
-	    twitterFilterQuery.track(track);
+	    twitterFilterQuery.track(Constants.track);
 	    twitterFilterQuery.language("en");
 	    
 	    twitterStream.filter(twitterFilterQuery);
