@@ -32,6 +32,8 @@ public class TwitterStreamAPI {
 	}
 	
 	public static void main(String[] args) {
+		MetricsProcessor metricsProcessor = new MetricsProcessor();
+
 		StatusListener listener = new StatusListener() {
 			
 			@Override
@@ -89,13 +91,13 @@ public class TwitterStreamAPI {
 						    }
 						    System.out.println(response.toString());
 						}
-						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
 				}
+
+				metricsProcessor.collectCollectedUrlsMetric(status.getURLEntities().length, Constants.track);
 			}
 			
 			@Override
