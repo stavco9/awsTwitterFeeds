@@ -7,9 +7,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import twitterFeeds.ExtractedLink;
+import twitterFeeds.MetricsProcessor;
 
 public class LinkExtractor {
 	  public static ExtractedLink extractContent(String url) {
+		  MetricsProcessor metricsProcessor = new MetricsProcessor();
+
+		  long start = System.currentTimeMillis();
 
 		  String content = "";
 		  
@@ -52,6 +56,9 @@ public class LinkExtractor {
 						break;
 					}
 			    }
+
+				long end = System.currentTimeMillis();
+				metricsProcessor.collectTimeTaken(end - start, "LINK_EXTRACT_TIME_TAKEN_MS");
 				
 				System.out.println("Conetnt: " + content);
 				

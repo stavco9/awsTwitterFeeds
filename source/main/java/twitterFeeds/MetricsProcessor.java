@@ -40,4 +40,30 @@ public class MetricsProcessor {
             System.out.println("Http request did not succeed");
         }
     }
+
+    public void collectTimeTaken(double timeTakenMs,
+                            String metricName) {
+        final AmazonCloudWatch cw =
+                AmazonCloudWatchClientBuilder.defaultClient();
+
+        MetricDatum datum = new MetricDatum()
+                .withMetricName(metricName)
+                .withUnit(StandardUnit.None)
+                .withValue(timeTakenMs);
+
+        PutMetricDataRequest request = new PutMetricDataRequest()
+                .withNamespace("SITE/PROCESSED_URLS")
+                .withMetricData(datum);
+
+        PutMetricDataResult response = null;
+        try {
+            response = cw.putMetricData(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (Objects.requireNonNull(response).getSdkHttpMetadata().getHttpStatusCode() != 200) {
+            System.out.println("Http request did not succeed");
+        }
+    }
 }

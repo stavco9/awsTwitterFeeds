@@ -17,6 +17,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import twitterFeeds.MetricsProcessor;
 
 public class ScreenshotGenerator {
 	
@@ -58,9 +59,12 @@ public class ScreenshotGenerator {
 	
 	  @SuppressWarnings("finally")
 	public static String takeScreenshot(String url) {
-		    
+		MetricsProcessor metricsProcessor = new MetricsProcessor();
+
+
+		long start = System.currentTimeMillis();
 		String screenshotFilePath = "";
-	    
+
 		//if you didn't update the Path system variable to add the full directory path to the executable as above mentioned then doing this directly through code
 		System.setProperty("webdriver.gecko.driver", geckoDriver);
 		
@@ -76,6 +80,8 @@ public class ScreenshotGenerator {
 	      TimeUnit.SECONDS.sleep(5);
 
 	      final File outputFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+	      long end = System.currentTimeMillis();
+	      metricsProcessor.collectTimeTaken(end - start, "SCREENSHOT_GENERATION_TIME_TAKEN_MS");
 	      FileUtils.copyFile(outputFile, screenShot);
 	      
 	      screenshotFilePath = sendToAmazonObjectStorage(outputFile);	      
