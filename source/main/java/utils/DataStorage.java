@@ -16,16 +16,16 @@ import twitterFeeds.ExtractedLink;
 public class DataStorage {
 
 	// Dev Mode
-	public static final String hostname = "twitter-feeds.cluster-cipuswkdggje.us-east-1.rds.amazonaws.com";
-	public static final String db_database = "twitter_links";
-	public static final String username = "cloud";
-	public static final String password = "----";
+	//public static final String hostname = "twitter-feeds.cluster-cipuswkdggje.us-east-1.rds.amazonaws.com";
+	//public static final String db_database = "twitter_links";
+	//public static final String username = "cloud";
+	//public static final String password = "----";
 	
 	// Prod Mode
-	//public static final String hostname = System.getProperty("config.mysql.hostname");
-	//public static final String db_database = System.getProperty("config.mysql.database");
-	//public static final String username = System.getProperty("config.mysql.username");
-	//public static final String password = System.getProperty("config.mysql.password");
+	public static final String hostname = System.getProperty("config.mysql.hostname");
+	public static final String db_database = System.getProperty("config.mysql.database");
+	public static final String username = System.getProperty("config.mysql.username");
+	public static final String password = System.getProperty("config.mysql.password");
 	
 	Connection conn;
 
