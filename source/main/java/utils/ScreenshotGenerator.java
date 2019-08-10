@@ -2,9 +2,13 @@ package utils;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +21,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import twitterFeeds.MetricsProcessor;
 
 public class ScreenshotGenerator {
 	
@@ -58,32 +63,57 @@ public class ScreenshotGenerator {
 	
 	  @SuppressWarnings("finally")
 	public static String takeScreenshot(String url) {
-		    
+		MetricsProcessor metricsProcessor = new MetricsProcessor();
+
+		long start = System.currentTimeMillis();
 		String screenshotFilePath = "";
-	    
+		  WebDriver driver = null;
 		//if you didn't update the Path system variable to add the full directory path to the executable as above mentioned then doing this directly through code
 		System.setProperty("webdriver.gecko.driver", geckoDriver);
-		
-        final WebDriver driver = new FirefoxDriver();
-		
-	    try {
-	      URL urlObj = new URL(url);
-			
-		  final File screenShot = new File(urlObj.getHost() + ".png").getAbsoluteFile();
-	    	
-	      driver.get(url);
-	      
-	      TimeUnit.SECONDS.sleep(5);
 
-	      final File outputFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-	      FileUtils.copyFile(outputFile, screenShot);
-	      
-	      screenshotFilePath = sendToAmazonObjectStorage(outputFile);	      
-	    } 
+	    try {
+	    	if (SystemUtils.IS_OS_WINDOWS) {
+				driver = new FirefoxDriver();
+				URL urlObj = new URL(url);
+
+				final File screenShot = new File(urlObj.getHost() + ".png").getAbsoluteFile();
+
+				driver.get(url);
+
+				TimeUnit.SECONDS.sleep(5);
+
+				final File outputFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+				FileUtils.copyFile(outputFile, screenShot);
+
+				screenshotFilePath = sendToAmazonObjectStorage(outputFile);
+			} else if (SystemUtils.IS_OS_LINUX) {
+				Process process;
+				String filename = String.format("screenshot-%s.png", UUID.randomUUID().toString());
+				String command = String.format("xvfb-run --server-args=\"-screen 0 1024x768x24\" wkhtmltoimage --format png --crop-w 1024 --crop-h 768 --quiet --quality 60 --load-error-handling ignore %s %s",
+						url,
+						filename);
+				process = Runtime.getRuntime()
+						.exec(command);
+				StreamGobbler streamGobbler =
+						new StreamGobbler(process.getInputStream(), System.out::println);
+				StreamGobbler errorStreamGobbler =
+						new StreamGobbler(process.getErrorStream(), System.out::println);
+				Executors.newSingleThreadExecutor().submit(streamGobbler);
+				Executors.newSingleThreadExecutor().submit(errorStreamGobbler);
+				int exitCode = process.waitFor();
+				if (exitCode != 0) {
+					throw new RuntimeException(String.format("Something went wrong with command: %s",command));
+				}
+				screenshotFilePath = sendToAmazonObjectStorage(new File(filename));
+				FileUtils.forceDelete(new File(filename));
+			}
+			long end = System.currentTimeMillis();
+			metricsProcessor.collectTimeTaken(end - start, "SCREENSHOT_GENERATION_TIME_TAKEN_MS");
+		}
 	    catch(Exception e){
 	    	e.printStackTrace();
 	    }finally {
-	      driver.close();
+	      Objects.requireNonNull(driver).close();
 	    
 	      return screenshotFilePath;
 	    }

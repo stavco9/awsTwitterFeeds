@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="awsTwitterFeeds" />
         <module name="TwitterFeeds" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="awsTwitterFeeds" target="12" />
       <module name="TwitterFeeds" target="12" />
     </bytecodeTargetLevel>
   </component>
