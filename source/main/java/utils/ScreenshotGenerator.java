@@ -89,7 +89,7 @@ public class ScreenshotGenerator {
 			} else if (SystemUtils.IS_OS_LINUX) {
 				Process process;
 				String filename = String.format("screenshot-%s.png", UUID.randomUUID().toString());
-				String command = String.format("xvfb-run --server-args=\"-screen 0 1024x768x24\" wkhtmltoimage --format png --crop-w 1024 --crop-h 768 --quiet --quality 60 --load-error-handling ignore %s %s",
+				String command = String.format("./takeScreenshot.sh %s %s",
 						url,
 						filename);
 				process = Runtime.getRuntime()
@@ -102,10 +102,22 @@ public class ScreenshotGenerator {
 				Executors.newSingleThreadExecutor().submit(errorStreamGobbler);
 				int exitCode = process.waitFor();
 				if (exitCode != 0) {
-					throw new RuntimeException(String.format("Something went wrong with command: %s",command));
+					System.err.println(String.format("Something went wrong with command: %s",command));
+				} else {
+					screenshotFilePath = sendToAmazonObjectStorage(new File(filename));
 				}
-				screenshotFilePath = sendToAmazonObjectStorage(new File(filename));
-				FileUtils.forceDelete(new File(filename));
+
+				File fileToDelete = new File(filename);
+
+				if (fileToDelete.exists()) {
+					boolean deleteResult = fileToDelete.delete();
+
+					if (deleteResult) {
+						System.out.println("Deleted file successfully");
+					} else {
+						System.err.println("Did not succeed in deleting file");
+					}
+				}
 			}
 			long end = System.currentTimeMillis();
 			metricsProcessor.collectTimeTaken(end - start, "SCREENSHOT_GENERATION_TIME_TAKEN_MS");
@@ -113,9 +125,8 @@ public class ScreenshotGenerator {
 	    catch(Exception e){
 	    	e.printStackTrace();
 	    }finally {
-	      Objects.requireNonNull(driver).close();
-	    
-	      return screenshotFilePath;
+	    	if (driver != null) driver.close();
 	    }
+		  return screenshotFilePath;
 	  }
 }
