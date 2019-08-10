@@ -19,22 +19,22 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 public class TwitterStreamAPI {
 
 	// Dev Mode
-	private static final String consumerKey = "----";
-	private static final String consumerSecret = "----";
-	private static final String accessToken = "-----";
-	private static final String accessTokenSecret = "----";
-	private static final String track = "New York";
-	private static final String sqsAmazonUrl = "https://sqs.us-east-1.amazonaws.com/035154003643/colmanTwitterQueue";
+	//private static final String consumerKey = "----";
+	//private static final String consumerSecret = "----";
+	//private static final String accessToken = "-----";
+	//private static final String accessTokenSecret = "----";
+	//private static final String track = "New York";
+	//private static final String sqsAmazonUrl = "https://sqs.us-east-1.amazonaws.com/035154003643/colmanTwitterQueue";
 
 	private static AmazonSQS client = AmazonSQSClientBuilder.defaultClient();
 
 	// Prod Mode
-	//private static final String consumerKey = System.getProperty("config.twitter.consumer.key");
-	//private static final String consumerSecret = System.getProperty("config.twitter.consumer.secret");
-	//private static final String accessToken = System.getProperty("config.twitter.access.token");
-	//private static final String accessTokenSecret = System.getProperty("config.twitter.access.secret");
-	//private static final String track = System.getProperty("config.twitter.track");
-	//private static final String sqsAmazonUrl = System.getProperty("config.sqs.url");
+	private static final String consumerKey = System.getProperty("config.twitter.consumer.key");
+	private static final String consumerSecret = System.getProperty("config.twitter.consumer.secret");
+	private static final String accessToken = System.getProperty("config.twitter.access.token");
+	private static final String accessTokenSecret = System.getProperty("config.twitter.access.secret");
+	private static final String track = System.getProperty("config.twitter.track");
+	private static final String sqsAmazonUrl = System.getProperty("config.sqs.url");
 	
 	public static void main(String[] args) {
 		MetricsProcessor metricsProcessor = new MetricsProcessor();

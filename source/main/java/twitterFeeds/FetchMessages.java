@@ -14,10 +14,10 @@ import java.util.*;
 public class FetchMessages {
 	
 	// Dev Mode
-	private static final String sqsAmazonUrl = "https://sqs.us-east-1.amazonaws.com/035154003643/colmanTwitterQueue";
+	//private static final String sqsAmazonUrl = "https://sqs.us-east-1.amazonaws.com/035154003643/colmanTwitterQueue";
 	
 	// Prod Mode
-	//private static final String sqsAmazonUrl = System.getProperty("config.sqs.url");
+	private static final String sqsAmazonUrl = System.getProperty("config.sqs.url");
 	
 	private static AmazonSQS client = AmazonSQSClientBuilder.defaultClient();
 	
