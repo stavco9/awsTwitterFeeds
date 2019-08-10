@@ -25,11 +25,11 @@ import twitterFeeds.MetricsProcessor;
 
 public class ScreenshotGenerator {
 	
-	//private static final String bucketName = System.getProperty("config.s3.bucket");
-	//private static final String geckoDriver = System.getProperty("config.gecko.driver");
+	private static final String bucketName = System.getProperty("config.s3.bucket");
+	private static final String geckoDriver = System.getProperty("config.gecko.driver");
 	
-	private static final String bucketName = "colmantwitterscreenshots";
-	private static final String geckoDriver = "C:\\Cloud\\geckodriver-v0.24.0-win64\\geckodriver.exe";
+	//private static final String bucketName = "colmantwitterscreenshots";
+	//private static final String geckoDriver = "C:\\Cloud\\geckodriver-v0.24.0-win64\\geckodriver.exe";
 	
 	private static final String s3AmazonUrl = ("https://" + bucketName + ".s3.amazonaws.com/");
 	
