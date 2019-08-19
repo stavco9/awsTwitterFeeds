@@ -28,7 +28,7 @@ public class LinkExtractor {
 				
 				Elements titles = doc.select("title");
 				
-				if (titles.get(0) != null) {
+				if (titles.toArray().length > 0 && titles.get(0) != null) {
 					title = titles.get(0).text().replace("'", "");	
 				}
 				
