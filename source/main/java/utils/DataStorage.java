@@ -19,7 +19,7 @@ public class DataStorage {
 	//public static final String hostname = "twitter-feeds.cluster-cipuswkdggje.us-east-1.rds.amazonaws.com";
 	//public static final String db_database = "twitter_links";
 	//public static final String username = "cloud";
-	//public static final String password = "CloudStavl1ron";
+	//public static final String password = "------";
 	
 	// Prod Mode
 	public static final String hostname = System.getProperty("config.mysql.hostname");
