@@ -68,11 +68,12 @@ public class ScreenshotGenerator {
 		long start = System.currentTimeMillis();
 		String screenshotFilePath = "";
 		  WebDriver driver = null;
-		//if you didn't update the Path system variable to add the full directory path to the executable as above mentioned then doing this directly through code
-		System.setProperty("webdriver.gecko.driver", geckoDriver);
 
 	    try {
 	    	if (SystemUtils.IS_OS_WINDOWS) {
+	    		//if you didn't update the Path system variable to add the full directory path to the executable as above mentioned then doing this directly through code
+	    		System.setProperty("webdriver.gecko.driver", geckoDriver);
+	    		
 				driver = new FirefoxDriver();
 				URL urlObj = new URL(url);
 

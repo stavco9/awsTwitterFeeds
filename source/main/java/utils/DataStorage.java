@@ -19,7 +19,7 @@ public class DataStorage {
 	//public static final String hostname = "twitter-feeds.cluster-cipuswkdggje.us-east-1.rds.amazonaws.com";
 	//public static final String db_database = "twitter_links";
 	//public static final String username = "cloud";
-	//public static final String password = "----";
+	//public static final String password = "CloudStavl1ron";
 	
 	// Prod Mode
 	public static final String hostname = System.getProperty("config.mysql.hostname");
@@ -61,6 +61,25 @@ public class DataStorage {
 		    st.executeUpdate(query);
 
 		      conn.close();
+		      
+		      deleteOldLinks();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  }
+	  
+	  private void deleteOldLinks() {
+		  // Delete all except of last 1000 feeds
+		  String query = "DELETE FROM TWITTER_LINKS WHERE CURR_DATE NOT IN (SELECT CURR_DATE FROM (SELECT CURR_DATE FROM TWITTER_LINKS ORDER BY CURR_DATE DESC LIMIT 1000) foo)";
+		  
+		  PreparedStatement st;
+		try {
+			st = conn.prepareStatement(query);
+			
+			  st.execute(query);
+			  
+			  conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
