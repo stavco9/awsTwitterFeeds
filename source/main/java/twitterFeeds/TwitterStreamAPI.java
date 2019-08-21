@@ -19,10 +19,10 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 public class TwitterStreamAPI {
 
 	// Dev Mode
-	//private static final String consumerKey = "-----";
+	//private static final String consumerKey = "----";
 	//private static final String consumerSecret = "----";
 	//private static final String accessToken = "-----";
-	//private static final String accessTokenSecret = "-----";
+	//private static final String accessTokenSecret = "----";
 	//private static final String track = "New York";
 	//private static final String sqsAmazonUrl = "https://sqs.us-east-1.amazonaws.com/035154003643/colmanTwitterQueue";
 

@@ -59,8 +59,6 @@ public class DataStorage {
 		    
 		    // note that i'm leaving "date_created" out of this insert statement
 		    st.executeUpdate(query);
-
-		      conn.close();
 		      
 		      deleteOldLinks();
 		} catch (SQLException e) {
